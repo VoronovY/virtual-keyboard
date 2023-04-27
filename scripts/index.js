@@ -2,13 +2,27 @@ import keys from './keys.js';
 
 const body = document.querySelector('body');
 
-let lang = "ru";
-
-// const keysRu = ['ё', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'delete', 'tab', 'й', 'ц', 'у', 'к', 'е', 'н', 'г', 'ш', 'щ', 'з', 'х', 'ъ', '\\', 'caps lock', 'ф', 'ы', 'в', 'а', 'п', 'р', 'о', 'л', 'д', 'ж', 'э', 'enter', 'shift', 'я', 'ч', 'с', 'м', 'и', 'т', 'ь', 'б', 'ю', '/', 'shift', 'ctrl', 'option', 'command', 'space', 'command', 'option', 'left', 'up', 'down', 'right'];
+let lang = 'ru';
+const pressedKeys = new Set();
+let inputMode = changeInputMode();
 
 function createDiv() {
   const newDiv = document.createElement('div');
   return newDiv;
+}
+
+function isText(code) {
+  return (
+    code === 'Backspace'
+    || code === 'MetaLeft'
+    || code === 'MetaRight'
+    || code === 'CapsLock'
+    || code === 'ControlLeft'
+    || code === 'AltLeft'
+    || code === 'ShiftLeft'
+    || code === 'AltRight'
+    || code === 'ShiftRight'
+  );
 }
 
 function createKeyEl(value) {
@@ -30,6 +44,13 @@ function createKeyEl(value) {
 
 const keysArr = Object.keys(keys);
 
+function updateKeyboard() {
+  keysArr.forEach((key) => {
+    const element = document.querySelector(`[data-code=${key}]`);
+    element.innerHTML = keys[key][inputMode];
+  });
+}
+
 function createKeboard(element) {
   keysArr.forEach((el, idx) => {
     const key = createKeyEl(el);
@@ -44,23 +65,7 @@ function createKeboard(element) {
       element.append(key);
     }
   });
-  // for (let i = 0; i < keysRu.length; i += 1) {
-  //   const key = createKeyEl(keysRu[i]);
-  //   if (i === keysRu.length - 3) {
-  //     const nextKey = createKeyEl(keysRu[i + 1]);
-  //     const splittedEl = createDiv();
-  //     splittedEl.classList.add('splitted-key');
-  //     splittedEl.append(key);
-  //     splittedEl.append(nextKey);
-  //     element.append(splittedEl);
-  //     i += 1;
-  //   } else {
-  // element.append(key);
-  //   }
-  // }
 }
-
-// const KEYBOARD = [];
 
 const container = createDiv();
 const textArea = document.createElement('textarea');
@@ -75,17 +80,60 @@ container.append(textArea, keyBoardBody);
 
 body.append(container);
 
+function changeInputMode() {
+  return pressedKeys.has('ShiftLeft') || pressedKeys.has('ShiftRight') || pressedKeys.has('CapsLock') ? `shifted${lang.slice(0, 1).toUpperCase()}${lang.slice(1)}` : lang;
+}
+
 document.addEventListener('keydown', (e) => {
-  e.preventDefault();
   const { code } = e;
+  if (!isText(code)) {
+    e.preventDefault();
+    const selectorType = changeInputMode();
+    textArea.innerHTML += keys[code][selectorType];
+  }
   const currentEl = document.querySelector(`[data-code=${code}]`);
   currentEl.classList.add('keyboard__key_mode_active');
-  textArea.innerHTML += keys[code][lang];
+  pressedKeys.add(code);
+  if (code === 'ShiftLeft' || code === 'ShiftRight' || code === 'CapsLock') {
+    inputMode = changeInputMode();
+    updateKeyboard();
+  }
+  if (pressedKeys.has('ControlLeft') && pressedKeys.has('MetaLeft')) {
+    lang = lang === 'ru' ? 'en' : 'ru';
+    inputMode = changeInputMode();
+    updateKeyboard();
+  }
 });
 
 document.addEventListener('keyup', (e) => {
-  e.preventDefault();
   const { code } = e;
+  if (!isText(code)) {
+    e.preventDefault();
+  }
   const currentEl = document.querySelector(`[data-code=${code}]`);
   currentEl.classList.remove('keyboard__key_mode_active');
+  pressedKeys.delete(code);
+  if (code === 'ShiftLeft' || code === 'ShiftRight' || code === 'CapsLock') {
+    inputMode = changeInputMode();
+    updateKeyboard();
+  }
+});
+
+keyBoardBody.addEventListener('mousedown', (e) => {
+  const { code } = e.target.dataset;
+  if (!code) return;
+  if (!isText(code)) {
+    e.preventDefault();
+    textArea.innerHTML += keys[code][lang];
+  }
+  const currentEl = document.querySelector(`[data-code=${code}]`);
+  pressedKeys.add(code);
+  currentEl.classList.add('keyboard__key_mode_active');
+});
+
+keyBoardBody.addEventListener('mouseup', (e) => {
+  const { code } = e.target.dataset;
+  if (!code) return;
+  e.target.classList.remove('keyboard__key_mode_active');
+  pressedKeys.delete(code);
 });
