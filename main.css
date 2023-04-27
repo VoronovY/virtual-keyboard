@@ -1,99 +1,5 @@
-@font-face {
-  font-family: "Georgia";
-  src: url("./assets/fonts/Georgia/georgia-bold-italic.ttf") format("ttf") url("./assets/fonts/Georgia/Georgia-BoldItalic.woff2") format("woff2"), url("./assets/fonts/Georgia/Georgia-BoldItalic.woff") format("woff");
-  font-weight: bold;
-  font-style: italic;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Georgia";
-  src: url("./assets/fonts/Georgia/georgia-regular.ttf") format("ttf"), url("./assets/fonts/Georgia/Georgia.woff2") format("woff2"), url("./assets/fonts/Georgia/Georgia.woff") format("woff");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Georgia";
-  src: url("./assets/fonts/Georgia/georgia-italic.ttf") format("ttf"), url("./assets/fonts/Georgia/Georgia-Italic.woff2") format("woff2"), url("./assets/fonts/Georgia/Georgia-Italic.woff") format("woff");
-  font-weight: normal;
-  font-style: italic;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Georgia";
-  src: url("./assets/fonts/Georgia/georgia-bold.ttf") format("ttf"), url("./assets/fonts/Georgia/Georgia-Bold.woff2") format("woff2"), url("./assets/fonts/Georgia/Georgia-Bold.woff") format("woff");
-  font-weight: bold;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Arial Narrow";
-  src: url("./assets/fonts/Arial/arial-narrow-bold.ttf") format("ttf"), url("./assets/fonts/Arial/ArialNarrow-Bold.woff2") format("woff2"), url("./assets/fonts/Arial/ArialNarrow-Bold.woff") format("woff");
-  font-weight: bold;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Arial Narrow";
-  src: url("./assets/fonts/Arial/arial-narrow-bold-italic.ttf") format("ttf"), url("./assets/fonts/Arial/ArialNarrow-BoldItalic.woff2") format("woff2"), url("./assets/fonts/Arial/ArialNarrow-BoldItalic.woff") format("woff");
-  font-weight: bold;
-  font-style: italic;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Arial Narrow";
-  src: url("./assets/fonts/Arial/arial-narrow.ttf") format("ttf"), url("./assets/fonts/Arial/ArialNarrow.woff2") format("woff2"), url("./assets/fonts/Arial/ArialNarrow.woff") format("woff");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Arial";
-  src: url("./assets/fonts/Arial/arial-bold.ttf") format("ttf"), url("./assets/fonts/Arial/Arial-BoldItalicMT.woff2") format("woff2"), url("./assets/fonts/Arial/Arial-BoldItalicMT.woff") format("woff");
-  font-weight: bold;
-  font-style: italic;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Arial";
-  src: url("./assets/fonts/Arial/arial-italic.ttf") format("ttf"), url("./assets/fonts/Arial/Arial-ItalicMT.woff2") format("woff2"), url("./assets/fonts/Arial/Arial-ItalicMT.woff") format("woff");
-  font-weight: normal;
-  font-style: italic;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Arial";
-  src: url("./assets/fonts/Arial/arial-black.ttf") format("ttf"), url("./assets/fonts/Arial/Arial-Black.woff2") format("woff2"), url("./assets/fonts/Arial/Arial-Black.woff") format("woff");
-  font-weight: 900;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Arial";
-  src: url("./assets/fonts/Arial/arial-regular.ttf") format("ttf"), url("./assets/fonts/Arial/ArialMT.woff2") format("woff2"), url("./assets/fonts/Arial/ArialMT.woff") format("woff");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Arial Narrow";
-  src: url("./assets/fonts/Arial/arial-narrow-italic.ttf") format("ttf"), url("./assets/fonts/Arial/ArialNarrow-Italic.woff2") format("woff2"), url("./assets/fonts/Arial/ArialNarrow-Italic.woff") format("woff");
-  font-weight: normal;
-  font-style: italic;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Arial";
-  src: url("./assets/fonts/Arial/arial-bold.ttf") format("ttf"), url("./assets/fonts/Arial/Arial-BoldMT.woff2") format("woff2"), url("./assets/fonts/Arial/Arial-BoldMT.woff") format("woff");
-  font-weight: bold;
-  font-style: normal;
-  font-display: swap;
-}
-button:hover,
-a:hover {
-  cursor: url("./assets/icons/cursor/vector.png"), auto;
-}
-
+/* colors */
+/* sizes */
 * {
   box-sizing: border-box;
 }
@@ -245,106 +151,87 @@ body {
   flex-direction: column;
   height: 100vh;
   width: 100%;
-  min-width: 1280px;
-  cursor: url("./assets/icons/cursor/union.png"), auto;
-}
-body.no-scroll {
-  overflow: hidden;
-}
-@media screen and (max-width: 1279px) {
-  body {
-    min-width: 768px;
-  }
-}
-@media screen and (max-width: 767px) {
-  body {
-    min-width: 320px;
-  }
-}
-
-h2 {
-  font-family: Georgia, "Times New Roman", Times, serif;
-  font-size: 44px;
-  letter-spacing: 0.1px;
-  line-height: 58px;
-}
-@media screen and (max-width: 520px) {
-  h2 {
-    font-size: 25px;
-    line-height: 32.5px;
-  }
-}
-
-h3 {
-  font-family: Georgia, "Times New Roman", Times, serif;
-  color: #545454;
-  font-size: 35px;
-  line-height: 45px;
-  letter-spacing: 2px;
-}
-@media screen and (max-width: 520px) {
-  h3 {
-    font-size: 25px;
-    line-height: 32.5px;
-    letter-spacing: 1.5px;
-  }
-}
-
-h4 {
-  font-size: 20px;
-  color: #545454;
-  font-family: Georgia, "Times New Roman", Times, serif;
-  line-height: 23px;
-  letter-spacing: 0.06em;
-}
-@media screen and (max-width: 520px) {
-  h4 {
-    font-size: 15px;
-    line-height: 17px;
-    letter-spacing: 0.06em;
-  }
-}
-
-h5 {
-  font-size: 15px;
-  font-family: Georgia, "Times New Roman", Times, serif;
-  line-height: 17px;
-  letter-spacing: 0.06em;
-  color: #545454;
-}
-@media screen and (max-width: 520px) {
-  h5 {
-    letter-spacing: 0;
-  }
+  justify-content: center;
+  align-items: center;
 }
 
 .container {
-  margin: 0 auto;
-  padding: 30px 40px;
+  width: 1000px;
+  height: 700px;
+  background-color: #35363A;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px 2px #35363A;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  justify-content: space-around;
+}
+
+.text-area {
+  width: 978px;
+  height: 300px;
+  resize: none;
+}
+
+.keyboard {
+  height: 350px;
+  background-color: #cdcdcd;
+  border-radius: 10px;
+  display: grid;
+  padding: 4px;
+  grid-template-columns: repeat(145, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  grid-gap: 5px;
+}
+
+body * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.keyboard__key {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(243, 243, 243);
+  border: 2px solid black;
+  border-radius: 5px;
+  grid-column: span 10;
+  font-size: 18px;
+  text-align: center;
+}
+
+.splitted-key {
+  display: flex;
+  flex-direction: column;
   height: 100%;
-  width: 100%;
-  max-width: 1280px;
+  justify-content: space-around;
+  grid-column: span 10;
 }
-@media screen and (max-width: 1000px) {
-  .container {
-    padding: 30px 30px;
-  }
-}
-@media screen and (max-width: 520px) {
-  .container {
-    padding: 10px 20px;
-  }
+.splitted-key .keyboard__key {
+  height: 45%;
 }
 
-.p-big {
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 15px;
-  line-height: 24px;
+.key:hover {
+  border: 1px solid #eeeeee;
 }
 
-.p-small {
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 12px;
+.key-xl {
+  grid-column: span 17;
+}
+
+.key-l {
+  grid-column: span 15;
+}
+
+.key-xxl {
+  grid-column: span 22;
+}
+
+.key-space {
+  grid-column: span 54;
 }
 
 /*# sourceMappingURL=main.css.map */
