@@ -2,7 +2,7 @@ import keys from './keys.js';
 
 const body = document.querySelector('body');
 
-let lang = "en";
+let lang = "ru";
 
 // const keysRu = ['ё', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'delete', 'tab', 'й', 'ц', 'у', 'к', 'е', 'н', 'г', 'ш', 'щ', 'з', 'х', 'ъ', '\\', 'caps lock', 'ф', 'ы', 'в', 'а', 'п', 'р', 'о', 'л', 'д', 'ж', 'э', 'enter', 'shift', 'я', 'ч', 'с', 'м', 'и', 'т', 'ь', 'б', 'ю', '/', 'shift', 'ctrl', 'option', 'command', 'space', 'command', 'option', 'left', 'up', 'down', 'right'];
 
@@ -14,6 +14,7 @@ function createDiv() {
 function createKeyEl(value) {
   const newKey = createDiv();
   newKey.classList.add('keyboard__key');
+  newKey.dataset.code = value;
   newKey.innerText = keys[value][lang];
   if (value === 'Backspace' || value === 'Tab' || value === 'MetaLeft' || value === 'MetaRight') {
     newKey.classList.add('key-l');
@@ -59,10 +60,6 @@ function createKeboard(element) {
   // }
 }
 
-document.addEventListener('keydown', (e) => {
-  console.log(e);
-});
-
 // const KEYBOARD = [];
 
 const container = createDiv();
@@ -77,3 +74,18 @@ createKeboard(keyBoardBody);
 container.append(textArea, keyBoardBody);
 
 body.append(container);
+
+document.addEventListener('keydown', (e) => {
+  e.preventDefault();
+  const { code } = e;
+  const currentEl = document.querySelector(`[data-code=${code}]`);
+  currentEl.classList.add('keyboard__key_mode_active');
+  textArea.innerHTML += keys[code][lang];
+});
+
+document.addEventListener('keyup', (e) => {
+  e.preventDefault();
+  const { code } = e;
+  const currentEl = document.querySelector(`[data-code=${code}]`);
+  currentEl.classList.remove('keyboard__key_mode_active');
+});

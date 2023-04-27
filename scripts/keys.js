@@ -141,7 +141,7 @@ export default {
   },
   KeyY: {
     code: 'KeyY',
-    ru: 'Н',
+    ru: 'н',
     shiftedRu: 'Н',
     en: 'y',
     shiftedEn: 'Y',

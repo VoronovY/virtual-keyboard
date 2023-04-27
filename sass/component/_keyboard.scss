@@ -38,6 +38,12 @@ body * {
   }
 }
 
+.keyboard__key_mode_active {
+  background-color: green;
+  color: white;
+
+}
+
 .key:hover {
 border: 1px solid #eeeeee;
 
