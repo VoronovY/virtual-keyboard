@@ -169,7 +169,7 @@ body {
 
 .text-area {
   width: 978px;
-  height: 300px;
+  height: 200px;
   resize: none;
 }
 
@@ -217,6 +217,16 @@ body * {
 .keyboard__key_mode_active {
   background-color: green;
   color: white;
+}
+
+.info {
+  color: #fafafa;
+}
+
+.info__text {
+  font-size: 20px;
+  padding: 10px;
+  text-align: center;
 }
 
 .key:hover {

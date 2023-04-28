@@ -44,6 +44,16 @@ body * {
 
 }
 
+.info {
+  color: $color-light-s;
+}
+
+.info__text {
+    font-size: 20px;
+    padding: 10px;
+    text-align: center;
+}
+
 .key:hover {
 border: 1px solid #eeeeee;
 

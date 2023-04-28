@@ -2,7 +2,7 @@ import keys from './keys.js';
 
 const body = document.querySelector('body');
 
-let lang = 'ru';
+let lang = localStorage.getItem('lang') || 'ru';
 const pressedKeys = new Set();
 let inputMode = changeInputMode();
 
@@ -70,13 +70,23 @@ function createKeboard(element) {
 const container = createDiv();
 const textArea = document.createElement('textarea');
 const keyBoardBody = createDiv();
+const info = createDiv();
+const aboutLanguage = document.createElement('p');
+const aboutSystem = document.createElement('p');
+
+aboutLanguage.classList.add('info__text');
+aboutSystem.classList.add('info__text');
+aboutLanguage.innerText = 'Для смены языка используйте ctrl + command(meta)';
+aboutSystem.innerText = 'Клавиатура сделана в системе macOS';
 
 textArea.classList.add('text-area');
 container.classList.add('container');
 keyBoardBody.classList.add('keyboard');
+info.classList.add('info');
+info.append(aboutLanguage, aboutSystem);
 createKeboard(keyBoardBody);
 
-container.append(textArea, keyBoardBody);
+container.append(textArea, keyBoardBody, info);
 
 body.append(container);
 
@@ -100,6 +110,7 @@ document.addEventListener('keydown', (e) => {
   }
   if (pressedKeys.has('ControlLeft') && pressedKeys.has('MetaLeft')) {
     lang = lang === 'ru' ? 'en' : 'ru';
+    localStorage.setItem('lang', lang);
     inputMode = changeInputMode();
     updateKeyboard();
   }
