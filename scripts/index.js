@@ -11,6 +11,13 @@ function createDiv() {
   return newDiv;
 }
 
+function isArrowButtonsCode(code) {
+  return code === 'ArrowLeft'
+  || code === 'ArrowUp'
+  || code === 'ArrowDown'
+  || code === 'ArrowRight';
+}
+
 function isText(code) {
   return (
     code === 'Backspace'
@@ -22,6 +29,7 @@ function isText(code) {
     || code === 'ShiftLeft'
     || code === 'AltRight'
     || code === 'ShiftRight'
+    || isArrowButtonsCode(code)
   );
 }
 
@@ -42,12 +50,16 @@ function createKeyEl(value) {
   return newKey;
 }
 
+function changeText(prevText, startIdx, endIdx, inputText) {
+  return prevText.slice(0, startIdx) + inputText + prevText.slice(endIdx);
+}
+
 const keysArr = Object.keys(keys);
 
 function updateKeyboard() {
   keysArr.forEach((key) => {
     const element = document.querySelector(`[data-code=${key}]`);
-    element.innerHTML = keys[key][inputMode];
+    element.innerText = keys[key][inputMode];
   });
 }
 
@@ -98,12 +110,25 @@ document.addEventListener('keydown', (e) => {
   const { code } = e;
   if (!isText(code)) {
     e.preventDefault();
+    textArea.focus();
     const selectorType = changeInputMode();
-    textArea.innerHTML += keys[code][selectorType];
+    const prevCursorPlaceStart = Math.min(textArea.selectionStart, textArea.selectionEnd);
+    const prevCursorPlaceEnd = Math.max(textArea.selectionStart, textArea.selectionEnd);
+    const newText = keys[code][selectorType];
+    textArea.value = changeText(
+      textArea.value,
+      textArea.selectionStart,
+      textArea.selectionEnd,
+      newText,
+    );
+    const isHighlight = prevCursorPlaceEnd - prevCursorPlaceStart > 0;
+    textArea.selectionStart = isHighlight ? prevCursorPlaceStart + newText.length : prevCursorPlaceEnd + newText.length;
+    textArea.selectionEnd = textArea.selectionStart;
   }
   const currentEl = document.querySelector(`[data-code=${code}]`);
   currentEl.classList.add('keyboard__key_mode_active');
   pressedKeys.add(code);
+  if (isArrowButtonsCode(code)) return;
   if (code === 'ShiftLeft' || code === 'ShiftRight' || code === 'CapsLock') {
     inputMode = changeInputMode();
     updateKeyboard();
@@ -135,7 +160,7 @@ keyBoardBody.addEventListener('mousedown', (e) => {
   if (!code) return;
   if (!isText(code)) {
     e.preventDefault();
-    textArea.innerHTML += keys[code][lang];
+    textArea.innerText += keys[code][lang];
   }
   const currentEl = document.querySelector(`[data-code=${code}]`);
   pressedKeys.add(code);
