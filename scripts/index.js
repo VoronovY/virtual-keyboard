@@ -114,7 +114,11 @@ document.addEventListener('keydown', (e) => {
     const selectorType = changeInputMode();
     const prevCursorPlaceStart = Math.min(textArea.selectionStart, textArea.selectionEnd);
     const prevCursorPlaceEnd = Math.max(textArea.selectionStart, textArea.selectionEnd);
-    const newText = keys[code][selectorType];
+    let newText = keys[code][selectorType];
+    if (code === 'Tab') newText = '\u0009';
+    if (code === 'Space') newText = ' ';
+    if (code === 'Enter') newText = '\n';
+    console.log(newText)
     textArea.value = changeText(
       textArea.value,
       textArea.selectionStart,
