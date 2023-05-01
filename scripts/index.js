@@ -137,7 +137,7 @@ function generateTextToPaste(textAreaElement) {
       textArea.value = newText;
       textArea.selectionStart = newSelectionStart;
       textArea.selectionEnd = newSelectionEnd;
-    });
+    }).catch((e) => e);
 }
 
 function takeSelectedText() {
