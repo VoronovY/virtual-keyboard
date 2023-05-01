@@ -1,0 +1,104 @@
+.keyboard {
+  height: 350px;
+  background-color: $color-dark-s;
+  border-radius: 10px;
+  display: grid;
+  padding: 4px;
+  grid-template-columns: repeat(145, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  grid-gap: 5px;
+}
+
+@keyframes click {
+  from {
+    background-color: rgb(243, 243, 243);
+    font-size: 18px;
+    box-shadow: 2px 1px 1px 0px green;
+  }
+
+  to {
+    background-color: green;
+    border: 0px;
+    font-size: 15px;
+    box-shadow: none;
+    color: white;
+    transform: translate(2px, 2px);
+  }
+}
+
+body * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.keyboard__key {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(243, 243, 243);
+  border-radius: 5px;
+  grid-column: span 10;
+  font-size: 18px;
+  text-align: center;
+  box-shadow: 2px 1px 1px 0px black;
+    &:hover {
+      cursor: pointer;
+      background-color: #a8a8a8;
+    }
+    &:active {
+      background-color: green;
+    }
+}
+.splitted-key {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: space-around;
+  grid-column: span 10;
+  & .keyboard__key {
+    height: 45%;
+  }
+}
+
+.keyboard__key_mode_active {
+  animation-name: click;
+  animation-duration: 1s;
+  background-color: green;
+  border: none;
+  box-shadow: none;
+  color: white;
+  font-size: 15px;
+  transform: translate(2px, 2px);
+}
+
+.info {
+  color: $color-light-s;
+}
+
+.info__text {
+    font-size: 20px;
+    padding: 10px;
+    text-align: center;
+}
+
+.key:hover {
+  border: 1px solid #eeeeee;
+}
+
+.key-xl {
+  grid-column: span 17;
+}
+
+.key-l {
+  grid-column: span 15;
+}
+
+.key-xxl {
+  grid-column: span 22;
+}
+
+.key-space {
+  grid-column: span 54;
+}
