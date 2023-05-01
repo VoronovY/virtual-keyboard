@@ -125,11 +125,11 @@ export default {
     code: 'Minus',
     ru: '-',
     shiftedRu: '_',
-    capsRu: '_',
+    capsRu: '-',
     capsAndShiftRu: '_',
     en: '-',
     shiftedEn: '_',
-    capsEn: '_',
+    capsEn: '-',
     capsAndShiftEn: '_',
   },
   Equal: {

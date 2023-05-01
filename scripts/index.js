@@ -4,22 +4,32 @@ const body = document.querySelector('body');
 
 let lang = localStorage.getItem('lang') || 'ru';
 const pressedKeys = new Set();
-let inputMode = changeInputMode();
+
+function changeInputMode(language, pressed) {
+  let mode = '';
+  const postfixLang = `${language.slice(0, 1).toUpperCase()}${language.slice(1)}`;
+  if ((pressed.has('CapsLock') && pressed.has('ShiftLeft'))
+   || (pressed.has('CapsLock') && pressed.has('ShiftRight'))) {
+    mode = `capsAndShift${postfixLang}`;
+  } else if (pressed.has('ShiftLeft') || pressed.has('ShiftRight')) {
+    mode = `shifted${postfixLang}`;
+  } else if (pressed.has('CapsLock')) {
+    mode = `caps${postfixLang}`;
+  } else {
+    mode = language;
+  }
+  return mode;
+}
+
+let inputMode = changeInputMode(lang, pressedKeys);
 
 function createDiv() {
   const newDiv = document.createElement('div');
   return newDiv;
 }
 
-function isArrowButtonsCode(code) {
-  return code === 'ArrowLeft'
-  || code === 'ArrowUp'
-  || code === 'ArrowDown'
-  || code === 'ArrowRight';
-}
-
 function isText(code) {
-  return (
+  return !(
     code === 'Backspace'
     || code === 'MetaLeft'
     || code === 'MetaRight'
@@ -29,7 +39,6 @@ function isText(code) {
     || code === 'ShiftLeft'
     || code === 'AltRight'
     || code === 'ShiftRight'
-    || isArrowButtonsCode(code)
   );
 }
 
@@ -102,59 +111,123 @@ container.append(textArea, keyBoardBody, info);
 
 body.append(container);
 
-function changeInputMode() {
-  return pressedKeys.has('ShiftLeft') || pressedKeys.has('ShiftRight') || pressedKeys.has('CapsLock') ? `shifted${lang.slice(0, 1).toUpperCase()}${lang.slice(1)}` : lang;
+function generateTextToPaste(textAreaElement) {
+  textAreaElement.focus();
+  navigator.clipboard.readText()
+    .then((text) => {
+      textAreaElement.focus();
+      const prevCursorPlaceStart = Math.min(
+        textAreaElement.selectionStart,
+        textAreaElement.selectionEnd,
+      );
+      const prevCursorPlaceEnd = Math.max(
+        textAreaElement.selectionStart,
+        textAreaElement.selectionEnd,
+      );
+      const newText = changeText(
+        textAreaElement.value,
+        textAreaElement.selectionStart,
+        textAreaElement.selectionEnd,
+        text,
+      );
+      const isHighlight = prevCursorPlaceEnd - prevCursorPlaceStart > 0;
+      const newSelectionStart = isHighlight ? prevCursorPlaceStart + text.length
+        : prevCursorPlaceEnd + text.length;
+      const newSelectionEnd = textAreaElement.selectionStart;
+      textArea.value = newText;
+      textArea.selectionStart = newSelectionStart;
+      textArea.selectionEnd = newSelectionEnd;
+    });
+}
+
+function takeSelectedText() {
+  const cursorPlaceStart = Math.min(textArea.selectionStart, textArea.selectionEnd);
+  const cursorPlaceEnd = Math.max(textArea.selectionStart, textArea.selectionEnd);
+  const selectedText = textArea.value.slice(cursorPlaceStart, cursorPlaceEnd);
+  return { selectedText, cursorPlaceStart, cursorPlaceEnd };
+}
+
+function createNewText(element, code, cursorPlaceStart, cursorPlaceEnd) {
+  const selectorType = changeInputMode(lang, pressedKeys);
+  let newText = keys[code][selectorType];
+  if (code === 'Tab') newText = '\u0009';
+  if (code === 'Space') newText = ' ';
+  if (code === 'Enter') newText = '\n';
+  const text = changeText(
+    textArea.value,
+    cursorPlaceStart,
+    cursorPlaceEnd,
+    newText,
+  );
+  const isHighlight = cursorPlaceEnd - cursorPlaceStart > 0;
+  const selectionStart = isHighlight
+    ? cursorPlaceStart + newText.length : cursorPlaceEnd + newText.length;
+  const selectionEnd = selectionStart;
+  return { text, selectionStart, selectionEnd };
 }
 
 document.addEventListener('keydown', (e) => {
   const { code } = e;
-  if (!isText(code)) {
-    e.preventDefault();
+  if (!keys[code]) return;
+  e.preventDefault();
+  const { selectedText, cursorPlaceStart, cursorPlaceEnd } = takeSelectedText();
+  if (pressedKeys.has('MetaLeft') || pressedKeys.has('MetaRight') || code === 'MetaRight' || code === 'MetaLeft') {
+    if (code === 'KeyC') {
+      navigator.clipboard.writeText(selectedText);
+    } else if (code === 'KeyV') {
+      generateTextToPaste(textArea);
+    } else if (code === 'KeyX') {
+      navigator.clipboard.writeText(selectedText);
+      textArea.value = changeText(
+        textArea.value,
+        cursorPlaceStart,
+        cursorPlaceEnd,
+        '',
+      );
+    }
+  } else if (isText(code)) {
     textArea.focus();
-    const selectorType = changeInputMode();
-    const prevCursorPlaceStart = Math.min(textArea.selectionStart, textArea.selectionEnd);
-    const prevCursorPlaceEnd = Math.max(textArea.selectionStart, textArea.selectionEnd);
-    let newText = keys[code][selectorType];
-    if (code === 'Tab') newText = '\u0009';
-    if (code === 'Space') newText = ' ';
-    if (code === 'Enter') newText = '\n';
-    console.log(newText)
-    textArea.value = changeText(
-      textArea.value,
-      textArea.selectionStart,
-      textArea.selectionEnd,
-      newText,
+    const { text, selectionStart, selectionEnd } = createNewText(
+      textArea,
+      code,
+      cursorPlaceStart,
+      cursorPlaceEnd,
     );
-    const isHighlight = prevCursorPlaceEnd - prevCursorPlaceStart > 0;
-    textArea.selectionStart = isHighlight ? prevCursorPlaceStart + newText.length : prevCursorPlaceEnd + newText.length;
-    textArea.selectionEnd = textArea.selectionStart;
+    textArea.value = text;
+    textArea.selectionStart = selectionStart;
+    textArea.selectionEnd = selectionEnd;
+  } else if (code === 'Backspace') {
+    textArea.value = changeText(textArea.value, cursorPlaceStart - 1, cursorPlaceEnd, '');
+    textArea.selectionStart = cursorPlaceStart - 1;
+    textArea.selectionEnd = cursorPlaceStart - 1;
   }
   const currentEl = document.querySelector(`[data-code=${code}]`);
   currentEl.classList.add('keyboard__key_mode_active');
   pressedKeys.add(code);
-  if (isArrowButtonsCode(code)) return;
   if (code === 'ShiftLeft' || code === 'ShiftRight' || code === 'CapsLock') {
-    inputMode = changeInputMode();
+    inputMode = changeInputMode(lang, pressedKeys);
     updateKeyboard();
   }
-  if (pressedKeys.has('ControlLeft') && pressedKeys.has('MetaLeft')) {
+  if ((pressedKeys.has('ControlLeft') && pressedKeys.has('MetaLeft'))
+  || (pressedKeys.has('ControlLeft') && pressedKeys.has('MetaRight'))) {
     lang = lang === 'ru' ? 'en' : 'ru';
     localStorage.setItem('lang', lang);
-    inputMode = changeInputMode();
+    inputMode = changeInputMode(lang, pressedKeys);
     updateKeyboard();
   }
 });
 
 document.addEventListener('keyup', (e) => {
   const { code } = e;
-  if (!isText(code)) {
+  if (!keys[code]) return;
+  if (isText(code)) {
     e.preventDefault();
   }
   const currentEl = document.querySelector(`[data-code=${code}]`);
-  currentEl.classList.remove('keyboard__key_mode_active');
   pressedKeys.delete(code);
+  currentEl.classList.remove('keyboard__key_mode_active');
   if (code === 'ShiftLeft' || code === 'ShiftRight' || code === 'CapsLock') {
-    inputMode = changeInputMode();
+    inputMode = changeInputMode(lang, pressedKeys);
     updateKeyboard();
   }
 });
@@ -162,18 +235,75 @@ document.addEventListener('keyup', (e) => {
 keyBoardBody.addEventListener('mousedown', (e) => {
   const { code } = e.target.dataset;
   if (!code) return;
-  if (!isText(code)) {
-    e.preventDefault();
-    textArea.innerText += keys[code][lang];
+  if (!keys[code]) return;
+  e.preventDefault();
+  const { selectedText, cursorPlaceStart, cursorPlaceEnd } = takeSelectedText();
+  if (pressedKeys.has('MetaLeft') || pressedKeys.has('MetaRight') || code === 'MetaRight' || code === 'MetaLeft') {
+    if (code === 'KeyC') {
+      navigator.clipboard.writeText(selectedText);
+    } else if (code === 'KeyV') {
+      generateTextToPaste(textArea);
+    } else if (code === 'KeyX') {
+      navigator.clipboard.writeText(selectedText);
+      textArea.value = changeText(
+        textArea.value,
+        cursorPlaceStart,
+        cursorPlaceEnd,
+        '',
+      );
+    }
+  } else if (isText(code)) {
+    textArea.focus();
+    const { text, selectionStart, selectionEnd } = createNewText(
+      textArea,
+      code,
+      cursorPlaceStart,
+      cursorPlaceEnd,
+    );
+    textArea.value = text;
+    textArea.selectionStart = selectionStart;
+    textArea.selectionEnd = selectionEnd;
+  } else if (code === 'Backspace') {
+    textArea.value = changeText(textArea.value, cursorPlaceStart - 1, cursorPlaceEnd, '');
+    textArea.selectionStart = cursorPlaceStart - 1;
+    textArea.selectionEnd = cursorPlaceStart - 1;
   }
   const currentEl = document.querySelector(`[data-code=${code}]`);
-  pressedKeys.add(code);
-  currentEl.classList.add('keyboard__key_mode_active');
+  if (code === 'CapsLock') {
+    currentEl.classList.toggle('keyboard__key_mode_active');
+    if (pressedKeys.has(code)) {
+      pressedKeys.delete(code);
+    } else {
+      pressedKeys.add(code);
+    }
+  } else {
+    currentEl.classList.add('keyboard__key_mode_active');
+    pressedKeys.add(code);
+  }
+  if (code === 'ShiftLeft' || code === 'ShiftRight' || code === 'CapsLock') {
+    inputMode = changeInputMode(lang, pressedKeys);
+    updateKeyboard();
+  }
+  if ((pressedKeys.has('ControlLeft') && pressedKeys.has('MetaLeft'))
+  || (pressedKeys.has('ControlLeft') && pressedKeys.has('MetaRight'))) {
+    lang = lang === 'ru' ? 'en' : 'ru';
+    localStorage.setItem('lang', lang);
+    inputMode = changeInputMode(lang, pressedKeys);
+    updateKeyboard();
+  }
 });
 
 keyBoardBody.addEventListener('mouseup', (e) => {
   const { code } = e.target.dataset;
   if (!code) return;
-  e.target.classList.remove('keyboard__key_mode_active');
-  pressedKeys.delete(code);
+  if (!keys[code]) return;
+  const currentEl = document.querySelector(`[data-code=${code}]`);
+  if (code !== 'CapsLock') {
+    pressedKeys.delete(code);
+    currentEl.classList.remove('keyboard__key_mode_active');
+  }
+  if (code === 'ShiftLeft' || code === 'ShiftRight' || code === 'CapsLock') {
+    inputMode = changeInputMode(lang, pressedKeys);
+    updateKeyboard();
+  }
 });

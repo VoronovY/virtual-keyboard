@@ -1,5 +1,4 @@
 /* colors */
-/* sizes */
 * {
   box-sizing: border-box;
 }
@@ -185,6 +184,21 @@ body {
   grid-gap: 5px;
 }
 
+@keyframes click {
+  from {
+    background-color: rgb(243, 243, 243);
+    font-size: 18px;
+    box-shadow: 2px 1px 1px 0px green;
+  }
+  to {
+    background-color: green;
+    border: 0px;
+    font-size: 15px;
+    box-shadow: none;
+    color: white;
+    transform: translate(2px, 2px);
+  }
+}
 body * {
   margin: 0;
   padding: 0;
@@ -197,11 +211,18 @@ body * {
   align-items: center;
   justify-content: center;
   background-color: rgb(243, 243, 243);
-  border: 2px solid black;
   border-radius: 5px;
   grid-column: span 10;
   font-size: 18px;
   text-align: center;
+  box-shadow: 2px 1px 1px 0px black;
+}
+.keyboard__key:hover {
+  cursor: pointer;
+  background-color: #a8a8a8;
+}
+.keyboard__key:active {
+  background-color: green;
 }
 
 .splitted-key {
@@ -216,8 +237,14 @@ body * {
 }
 
 .keyboard__key_mode_active {
+  animation-name: click;
+  animation-duration: 1s;
   background-color: green;
+  border: none;
+  box-shadow: none;
   color: white;
+  font-size: 15px;
+  transform: translate(2px, 2px);
 }
 
 .info {
